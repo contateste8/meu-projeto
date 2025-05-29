@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-    const webhookUrl = "https://discord.com/api/webhooks/SEU_WEBHOOK_AQUI";
+    const webhookUrl = "https://discord.com/api/webhooks/1377330816664731709/bl_oh9S8js6rhNgBNMmqSplQc7f__4dde322QGU-qSnq-VzQVvjQ_JwRjwDDQX2SDa6I";
 
     const ip = req.headers["x-forwarded-for"]?.split(",")[0] || req.socket.remoteAddress;
 
