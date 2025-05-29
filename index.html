@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Webhook Teste</title>
+</head>
+<body onload="enviarWebhook()">
+    <h1>Webhook no Discord</h1>
+    <p>Quando você acessa essa página, um webhook é enviado.</p>
+    <button onclick="enviarWebhook()">Enviar Webhook Manual</button>
+
+    <script>
+        function enviarWebhook() {
+            fetch('/api/webhook', {
+                method: 'POST'
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Webhook enviado com sucesso!');
+                } else {
+                    console.log('Erro ao enviar webhook');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
