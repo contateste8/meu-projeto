@@ -15,13 +15,36 @@ export default async function handler(req, res) {
 
     const userAgent = req.headers["user-agent"] || "Desconhecido";
 
+    // 🔍 Parser simples de User Agent
+    function parseUserAgent(ua) {
+        let browser = "Desconhecido";
+        if (ua.includes("Chrome")) browser = "Chrome";
+        else if (ua.includes("Firefox")) browser = "Firefox";
+        else if (ua.includes("Safari") && !ua.includes("Chrome")) browser = "Safari";
+        else if (ua.includes("Edge")) browser = "Edge";
+        else if (ua.includes("OPR") || ua.includes("Opera")) browser = "Opera";
+
+        let os = "Desconhecido";
+        if (ua.includes("Windows")) os = "Windows";
+        else if (ua.includes("Android")) os = "Android";
+        else if (ua.includes("iPhone")) os = "iOS";
+        else if (ua.includes("Mac OS")) os = "Mac OS";
+        else if (ua.includes("Linux")) os = "Linux";
+
+        const device = ua.includes("Mobile") ? "Celular" : "Desktop";
+
+        return { browser, os, device };
+    }
+
+    const { browser, os, device } = parseUserAgent(userAgent);
+
     const embed = {
         embeds: [
             {
                 title: "🖥 Novo usuário acessou o site",
                 color: 375295,
                 description: `
-**Informações de IP**
+**🌐 Informações de IP**
 > **Endereço de IP:** \`${ip}\`
 > **País:** ${country}
 > **Código do País:** ${countryCode}
@@ -30,8 +53,11 @@ export default async function handler(req, res) {
 > **Provedor:** ${isp}
 > **Domínio do Provedor:** \`${domain}\`
 
-**Informações do Navegador**
-> **User Agent:** ${userAgent}
+**🧠 Informações do Navegador**
+> **User Agent:** \`${userAgent}\`
+> **Navegador:** ${browser}
+> **Sistema Operacional:** ${os}
+> **Dispositivo:** ${device}
                 `,
                 footer: { text: "IP Logger" },
                 timestamp: new Date().toISOString()
