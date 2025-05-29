@@ -3,7 +3,6 @@ export default async function handler(req, res) {
 
     const ip = req.headers["x-forwarded-for"]?.split(",")[0] || req.socket.remoteAddress;
 
-    // Coletar dados de geolocalização
     const geoRes = await fetch(`https://ipwho.is/${ip}`);
     const geoData = await geoRes.json();
 
@@ -19,8 +18,8 @@ export default async function handler(req, res) {
     const embed = {
         embeds: [
             {
-                title: "🚀 Nova pessoa acessou seu site",
-                color: 65448,
+                title: "🖥 Novo usuário acessou o site",
+                color: 375295,
                 description: `
 **Informações de IP**
 > **Endereço de IP:** \`${ip}\`
@@ -34,7 +33,7 @@ export default async function handler(req, res) {
 **Informações do Navegador**
 > **User Agent:** ${userAgent}
                 `,
-                footer: { text: "Logger Web Vercel" },
+                footer: { text: "IP Logger" },
                 timestamp: new Date().toISOString()
             }
         ]
